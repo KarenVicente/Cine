@@ -116,8 +116,8 @@
 							$ejecutar=$base->ejecutar($consulta);
 							$fila=$base->obtener_array($ejecutar);
 
-							$date = date_create($fila['fecha']);
-							echo date_format($date, 'Y-m-d H:i:s');
+							$date = date_create($fila['fecha']." ".$fila['inicio']);
+							echo date_format($date, 'Y-m-d H:i');
 
 							echo '<div class="row">						
 									<div class="col m3 s12 peli">

@@ -36,7 +36,9 @@
 		position: relative;
 		pointer-events:auto;
 	}
-	
+	select{
+		display:block;
+	}
 </style>
 <body>
 	<nav class="menu nav-extended">
@@ -72,32 +74,19 @@
 						<div class="collection with-header">
 							<h5 class="collection-header">Menú De Comidas</h5>
 							<?php 
-								$consulta="SELECT Cod_Comidas, Nombre, Imagen FROM comidas WHERE 1";
+								$consulta="SELECT comidas.Cod_Comidas as Cod_Comidas, comidas.Nombre as Nombre, comidas.Imagen as Imagen, tamanos.Cod_Tamano as codta FROM comidas, tamanos, uniones_comidas WHERE uniones_comidas.Cod_Comidas=comidas.Cod_Comidas AND uniones_comidas.Cod_Tamano=tamanos.Cod_Tamano GROUP BY comidas.Cod_Comidas ";
 								$ejecutar=$base->ejecutar($consulta);
 									
 								while ($fila=$base->obtener_array($ejecutar)) {
-									echo '<a id="enlace" href="comida.php?comida='.$fila["Cod_Comidas"].'" class="collection-item"><i class="tiny material-icons">label</i> '.$fila['Nombre'].'</a>'	;							}
+									echo '<a id="enlace'.$fila["Cod_Comidas"].'" onclick="comida('.$fila["Cod_Comidas"].','.$fila["codta"].')" href="#" class="collection-item"><i class="tiny material-icons">label</i> '.$fila['Nombre'].'</a>'	;							}
 
 
 							 ?>
 						 </div>
 					</div>
-					<div class="col m9" class="comida">
-						<?php 
-								$consulta="SELECT Cod_Comidas, Nombre, Imagen FROM comidas WHERE 1";
-								$ejecutar=$base->ejecutar($consulta);
-									
-								while ($fila=$base->obtener_array($ejecutar)) {
-									echo '<div class="col m3 s12 peli">
-											<h5 class="center">'.$fila['Nombre'].'</h5>
-											<img class="img img-raised" src="Imagenes/'.$fila['Imagen'].'" />
-										</div>
-									';							
-
-								}
-
-
-							 ?>
+					<div class="col m9" id="comida">
+						
+						
 					</div>
 				</div>
 			</div>
@@ -115,9 +104,21 @@
 
 		  //$('#comida').hide();
 
-		 $('#enlace').click(function() {
-		      $('.comida').hide();
-		   });
+		 function comida(codigo,tamano) {
+		 	$('#comida').show();
+		 	var controlador = "procesos/obtener_comida.php";
+		 	$.ajax({
+		 		url:controlador,
+		 		type:'POST',
+		 		data:{codigo:codigo, tamano:tamano},
+		 		success:function (retorno) {
+		 			console.log(retorno);
+		 			$('#comida').html(retorno);
+		 		}
+
+
+		 	});
+		 }
 	</script>
 </body>
 </html>
